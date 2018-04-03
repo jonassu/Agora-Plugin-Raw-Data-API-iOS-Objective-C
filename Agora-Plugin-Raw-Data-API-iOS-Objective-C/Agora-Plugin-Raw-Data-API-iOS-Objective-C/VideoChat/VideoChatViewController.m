@@ -54,14 +54,14 @@
 
 - (void)setupVideo {
     [self.agoraKit enableVideo];
-    [self.agoraKit setVideoProfile:AgoraRtc_VideoProfile_360P swapWidthAndHeight: false];
+    [self.agoraKit setVideoProfile:AgoraVideoProfilePortrait360P swapWidthAndHeight: false];
 }
 
 - (void)setupLocalVideo {
     AgoraRtcVideoCanvas *videoCanvas = [[AgoraRtcVideoCanvas alloc] init];
     videoCanvas.uid = 0;
     videoCanvas.view = self.localVideo;
-    videoCanvas.renderMode = AgoraRtc_Render_Adaptive;
+    videoCanvas.renderMode = AgoraVideoRenderModeHidden;
     [self.agoraKit setupLocalVideo:videoCanvas];
 }
 
@@ -70,15 +70,15 @@
     self.agoraMediaDataPlugin.videoDelegate = self;
     self.agoraMediaDataPlugin.audioDelegate = self;
     
-    [self.agoraKit setRecordingAudioFrameParametersWithSampleRate:44100 channel:1 mode:AgoraRtc_RawAudioFrame_OpMode_ReadWrite samplesPerCall:4410];
-    [self.agoraKit setPlaybackAudioFrameParametersWithSampleRate:44100 channel:1 mode:AgoraRtc_RawAudioFrame_OpMode_ReadWrite samplesPerCall:4410];
+    [self.agoraKit setRecordingAudioFrameParametersWithSampleRate:44100 channel:1 mode:AgoraAudioRawFrameOperationModeReadWrite samplesPerCall:4410];
+    [self.agoraKit setPlaybackAudioFrameParametersWithSampleRate:44100 channel:1 mode:AgoraAudioRawFrameOperationModeReadWrite samplesPerCall:4410];
     [self.agoraKit setMixedAudioFrameParametersWithSampleRate:44100 samplesPerCall:4410];
 }
 
 - (void)joinChannel {
-    [self.agoraKit joinChannelByKey:nil channelName:@"demoChannel1" info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
+    [self.agoraKit joinChannelByToken:nil channelId:@"cavan123" info:nil uid:0 joinSuccess:^(NSString * _Nonnull channel, NSUInteger uid, NSInteger elapsed) {
         [self.agoraKit setEnableSpeakerphone:YES];
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
+//        [UIApplication sharedApplication].idleTimerDisabled = YES;
     }];
 }
 
@@ -91,13 +91,13 @@
     videoCanvas.uid = uid;
     
     videoCanvas.view = self.remoteVideo;
-    videoCanvas.renderMode = AgoraRtc_Render_Hidden;
+    videoCanvas.renderMode = AgoraVideoRenderModeHidden;
     [self.agoraKit setupRemoteVideo:videoCanvas];
     
     self.remoteUid = uid;
 }
 
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine didOfflineOfUid:(NSUInteger)uid reason:(AgoraRtcUserOfflineReason)reason {
+- (void)rtcEngine:(AgoraRtcEngineKit *)engine didOfflineOfUid:(NSUInteger)uid reason:(AgoraUserOfflineReason)reason {
     self.remoteVideo.hidden = YES;
 }
 
@@ -171,7 +171,7 @@
 }
 
 - (void)leaveChannel {
-    [self.agoraKit leaveChannel:^(AgoraRtcStats *stat) {
+    [self.agoraKit leaveChannel:^(AgoraChannelStats * _Nonnull stat) {
         [self hideControlButtons];     // Tutorial Step 8
         [UIApplication sharedApplication].idleTimerDisabled = NO;
         [self.remoteVideo removeFromSuperview];
