@@ -36,6 +36,7 @@ public:
     AgoraVideoRawData* getVideoRawDataWithVideoFrame(VideoFrame& videoFrame)
     {
         AgoraVideoRawData *data = [[AgoraVideoRawData alloc] init];
+        data.width = videoFrame.width;
         data.height = videoFrame.height;
         data.yStride = videoFrame.yStride;
         data.uStride = videoFrame.uStride;
@@ -234,7 +235,7 @@ static AgoraAudioFrameObserver s_audioFrameObserver;
 - (void)registerVideoObserverOrAudioVideoObserver:(ObserverType)observerType {
     agora::rtc::IRtcEngine* rtc_engine = (agora::rtc::IRtcEngine*)self.agoraKit.getNativeHandle;
     agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
-    mediaEngine.queryInterface(rtc_engine, agora::rtc::AGORA_IID_MEDIA_ENGINE);
+    mediaEngine.queryInterface(rtc_engine, agora::AGORA_IID_MEDIA_ENGINE);
     if (mediaEngine)
     {
         switch (observerType) {
@@ -255,7 +256,7 @@ static AgoraAudioFrameObserver s_audioFrameObserver;
 - (void)unregisterVideoObserverOrAudioVideoObserver:(ObserverType)observerType {
     agora::rtc::IRtcEngine* rtc_engine = (agora::rtc::IRtcEngine*)self.agoraKit.getNativeHandle;
     agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
-    mediaEngine.queryInterface(rtc_engine, agora::rtc::AGORA_IID_MEDIA_ENGINE);
+    mediaEngine.queryInterface(rtc_engine, agora::AGORA_IID_MEDIA_ENGINE);
     if (mediaEngine)
     {
         switch (observerType) {
